@@ -1,8 +1,11 @@
 import tkinter as tk
+from datetime import datetime
 from tkinter import ttk
 
 from backend.task_journal import TaskJournal
 from frontend.edit_task_dialog import EditTaskDialog
+from frontend.filter_dialog import FilterDialog
+from frontend.filter_settings import FilterSettings
 from frontend.new_task_dialog import NewTaskDialog
 from frontend.task_info_frame import TaskInfoFrame
 
@@ -17,6 +20,8 @@ class Application(tk.Tk):
         self.create_widgets()
 
         self.selected_task = None
+        self.filter_settings = FilterSettings()
+        print(self.filter_settings)
 
         self.task_map = {}
         self.update_task_map()
@@ -42,12 +47,15 @@ class Application(tk.Tk):
 
         self.delete_task_button = ttk.Button(self.right_frame, text="Usuń zadanie", command=self.delete_task)
 
+        self.filter_button = ttk.Button(self, text="Filtruj", command=self.show_filter_dialog)
+
         self.left_frame.grid(row=0, column=0, sticky="nswe")
         self.right_frame.grid(row=0, column=1, sticky="nswe")
         self.add_task_button.grid(row=1, column=0, columnspan=2)
         self.task_treeview.grid(sticky="nswe")
         self.edit_task_button.grid(row=1, column=0, sticky="nswe")
         self.delete_task_button.grid(row=1, column=1, sticky="nswe")
+        self.filter_button.grid(row=2, column=0, columnspan=2)
 
         self.left_frame.grid_columnconfigure(0, weight=1)
         self.left_frame.grid_rowconfigure(0, weight=1)
@@ -74,6 +82,13 @@ class Application(tk.Tk):
             self.refresh_task_treeview()
             self.refresh_task_info_frame()
 
+    def show_filter_dialog(self):
+        FilterDialog(self, self.filter_settings)
+        self.selected_task = None
+        self.update_task_map()
+        self.refresh_task_treeview()
+        self.refresh_task_info_frame()
+
     def delete_task(self):
         if self.selected_task:
             self.task_journal.delete_task(self.selected_task.id)
@@ -83,6 +98,24 @@ class Application(tk.Tk):
 
     def update_task_map(self):
         tasks = self.task_journal.get_all_tasks()
+        today = datetime.today().date()
+
+        if not self.filter_settings.show_done_tasks:
+            tasks = list(filter(lambda x: x.is_done is not True, tasks))
+
+        if not self.filter_settings.show_not_done_tasks:
+            tasks = list(filter(lambda x: x.is_done is not False, tasks))
+
+        if self.filter_settings.max_deadline_days is not None:
+            tasks = list(
+                filter(lambda x: x.deadline is None or (x.deadline - today).days <= self.filter_settings.max_deadline_days,
+                       tasks))
+
+        if self.filter_settings.max_deadline_days_past is not None:
+            tasks = list(
+                filter(lambda x: x.deadline is None or (today - x.deadline).days <= self.filter_settings.max_deadline_days_past,
+                       tasks))
+
         self.task_map.clear()
         for task in tasks:
             if task.deadline in self.task_map:
