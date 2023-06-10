@@ -41,6 +41,11 @@ class EditTaskDialog(simpledialog.Dialog):
         deadline = self.deadline_entry.get_date()
         description = self.description_text.get("1.0", tk.END).strip()
         is_done = bool(self.is_done_var.get())
+
+        if not task_name:
+            tk.messagebox.showwarning("Error", "Nazwa zadania nie może być pusta.")
+            return
+
         task = Task(task_id=self.task.id, task_name=task_name, deadline=deadline, description=description, is_done=is_done)
         self.result = task
         super().ok()
