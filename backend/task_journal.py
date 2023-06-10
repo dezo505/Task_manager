@@ -94,6 +94,7 @@ class TaskJournal:
 
         self.cursor.execute(query, tuple(params))
         self.connection.commit()
+        return True
 
     def delete_task(self, task_id):
         if not self.task_with_id_exists(task_id):
@@ -106,6 +107,7 @@ class TaskJournal:
         DELETE FROM tasks WHERE id = ?
         """, (task_id,))
         self.connection.commit()
+        return True
 
     def get_task_by_name_and_deadline(self, name, deadline):
         self.cursor.execute("""
