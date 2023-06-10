@@ -16,7 +16,7 @@ class TaskJournal:
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             task_name TEXT NOT NULL,
             added_date TEXT NOT NULL,
-            deadline TEXT,
+            deadline TEXT NOT NULL,
             description TEXT,
             is_done INTEGER NOT NULL,
             UNIQUE (task_name, deadline)
