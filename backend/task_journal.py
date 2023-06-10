@@ -6,6 +6,15 @@ from backend.task import Task
 logging.basicConfig(level=logging.INFO)
 
 
+def row_to_task(row):
+    return Task(row[0],
+                row[1],
+                datetime.datetime.strptime(row[2], '%Y-%m-%d').date(),
+                datetime.datetime.strptime(row[3], '%Y-%m-%d').date() if row[3] else None,
+                row[4],
+                bool(row[5]))
+
+
 class TaskJournal:
     def __init__(self, db_name='task_journal.db'):
         self.connection = sqlite3.connect(db_name)
@@ -33,32 +42,11 @@ class TaskJournal:
               task.deadline.strftime('%Y-%m-%d') if task.deadline else None, task.description, int(task.is_done)))
         self.connection.commit()
 
-    def row_to_task(self, row):
-        return Task(row[0], row[1], datetime.datetime.strptime(row[2], '%Y-%m-%d').date(),
-                    datetime.datetime.strptime(row[3], '%Y-%m-%d').date() if row[3] else None,
-                    row[4], bool(row[5]))
-
     def get_all_tasks(self):
         self.cursor.execute("""
         SELECT * FROM tasks
         """)
-        return [self.row_to_task(row) for row in self.cursor.fetchall()]
-
-    def get_tasks_due_in_days(self, days):
-        date_limit = (datetime.datetime.now() + datetime.timedelta(days=days)).strftime('%Y-%m-%d')
-        self.cursor.execute("""
-        SELECT * FROM tasks WHERE deadline <= ? AND is_done = 0
-        """, (date_limit,))
-        return [self.row_to_task(row) for row in self.cursor.fetchall()]
-
-    def get_tasks_due_this_week(self):
-        return self.get_tasks_due_in_days(7)
-
-    def get_undone_tasks(self):
-        self.cursor.execute("""
-        SELECT * FROM tasks WHERE is_done = 0
-        """)
-        return [self.row_to_task(row) for row in self.cursor.fetchall()]
+        return [row_to_task(row) for row in self.cursor.fetchall()]
 
     def edit_task(self, task_id, name=None, added_date=None, deadline=None, description=None, is_done=None):
         if not any([name, added_date, deadline, description, is_done is not None]):
@@ -109,6 +97,14 @@ class TaskJournal:
             return Task(task_id=row[0], task_name=row[1], added_date=row[2], deadline=row[3], description=row[4], is_done=row[5])
         else:
             return None
+
+    def task_exists(self, name, deadline):
+        self.cursor.execute("""
+        SELECT * FROM tasks WHERE task_name = ? AND deadline = ?
+        """, (name, deadline.strftime('%Y-%m-%d')))
+
+        row = self.cursor.fetchone()
+        return row is not None
 
     def __del__(self):
         self.connection.close()
