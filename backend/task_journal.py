@@ -34,13 +34,19 @@ class TaskJournal:
         self.connection.commit()
 
     def add_task(self, task):
+        if self.task_with_name_and_deadline_exists(task.name, task.deadline):
+            logging.error(f"Task with name {task.name} and deadline {task.deadline} already exists. Not adding task.")
+            return False
+
         logging.info(f"Adding task to journal:\n{task}")
+
         self.cursor.execute("""
         INSERT INTO tasks (task_name, added_date, deadline, description, is_done)
         VALUES (?, ?, ?, ?, ?)
         """, (task.name, task.added_date.strftime('%Y-%m-%d'),
               task.deadline.strftime('%Y-%m-%d') if task.deadline else None, task.description, int(task.is_done)))
         self.connection.commit()
+        return True
 
     def get_all_tasks(self):
         self.cursor.execute("""
@@ -49,9 +55,18 @@ class TaskJournal:
         return [row_to_task(row) for row in self.cursor.fetchall()]
 
     def edit_task(self, task_id, name=None, added_date=None, deadline=None, description=None, is_done=None):
+        if not self.task_with_id_exists(task_id):
+            logging.error(f"Task with id {task_id} doesn't exist")
+            return False
+
         if not any([name, added_date, deadline, description, is_done is not None]):
             logging.error("At least one task property must be provided for the update.")
-            return
+            return False
+
+        existing_task = self.get_task_by_name_and_deadline(name, deadline)
+        if existing_task and existing_task.id != task_id:
+            logging.error(f"A task with the name '{name}' and the deadline '{deadline}' already exists.")
+            return False
 
         query = "UPDATE tasks SET "
         params = []
@@ -75,11 +90,18 @@ class TaskJournal:
         query = query[:-2] + " WHERE id = ?"
         params.append(task_id)
 
+        logging.info(f"Editing task with id {task_id} in journal.")
+
         self.cursor.execute(query, tuple(params))
         self.connection.commit()
 
     def delete_task(self, task_id):
+        if not self.task_with_id_exists(task_id):
+            logging.error(f"Task with id {task_id} doesn't exist")
+            return False
+
         logging.info(f"Deleting task with id {task_id} from journal.")
+
         self.cursor.execute("""
         DELETE FROM tasks WHERE id = ?
         """, (task_id,))
@@ -98,10 +120,18 @@ class TaskJournal:
         else:
             return None
 
-    def task_exists(self, name, deadline):
+    def task_with_name_and_deadline_exists(self, name, deadline):
         self.cursor.execute("""
         SELECT * FROM tasks WHERE task_name = ? AND deadline = ?
         """, (name, deadline.strftime('%Y-%m-%d')))
+
+        row = self.cursor.fetchone()
+        return row is not None
+
+    def task_with_id_exists(self, task_id):
+        self.cursor.execute("""
+        SELECT * FROM tasks WHERE id = ?
+        """, (task_id,))
 
         row = self.cursor.fetchone()
         return row is not None
