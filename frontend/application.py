@@ -1,6 +1,7 @@
 import tkinter as tk
 from datetime import datetime
 from tkinter import ttk
+from ttkthemes import ThemedTk
 
 from backend.task_journal import TaskJournal
 from frontend.edit_task_dialog import EditTaskDialog
@@ -10,9 +11,9 @@ from frontend.new_task_dialog import NewTaskDialog
 from frontend.task_info_frame import TaskInfoFrame
 
 
-class Application(tk.Tk):
-    def __init__(self):
-        super().__init__()
+class Application(ThemedTk):
+    def __init__(self, theme="arc", *args, **kwargs):
+        super().__init__(theme=theme, *args, **kwargs)
         self.title("Task manager")
         self.geometry("800x600")
 
@@ -76,7 +77,11 @@ class Application(tk.Tk):
         dialog = NewTaskDialog(self)
         if dialog.result is not None:
             task = dialog.result
-            self.task_journal.add_task(task)
+            result = self.task_journal.add_task(task)
+            if not result:
+                tk.messagebox.showwarning("Error", "Something went wrong, task wasn't added.")
+                return
+            self.selected_task = task
             self.update_task_map()
             self.refresh_task_treeview()
 
@@ -86,13 +91,17 @@ class Application(tk.Tk):
 
         dialog = EditTaskDialog(self, task=self.selected_task)
         if dialog.result is not None:
-            self.task_journal.edit_task(
+            result = self.task_journal.edit_task(
                 self.selected_task.id,
                 name=dialog.result.name,
                 deadline=dialog.result.deadline,
                 description=dialog.result.description,
                 is_done=dialog.result.is_done
             )
+            if not result:
+                tk.messagebox.showwarning("Error", "Something went wrong, task wasn't edited.")
+                return
+
             self.update_task_map()
             self.refresh_task_treeview()
             self.refresh_task_info_frame()
@@ -108,7 +117,12 @@ class Application(tk.Tk):
         if not self.selected_task:
             return
 
-        self.task_journal.delete_task(self.selected_task.id)
+        result = self.task_journal.delete_task(self.selected_task.id)
+
+        if not result:
+            tk.messagebox.showwarning("Error", "Something went wrong, task wasn't deleted.")
+            return
+
         self.update_task_map()
         self.refresh_task_treeview()
         self.refresh_task_info_frame()
@@ -125,12 +139,14 @@ class Application(tk.Tk):
 
         if self.filter_settings.max_deadline_days is not None:
             tasks = list(
-                filter(lambda x: x.deadline is None or (x.deadline - today).days <= self.filter_settings.max_deadline_days,
-                       tasks))
+                filter(
+                    lambda x: x.deadline is None or (x.deadline - today).days <= self.filter_settings.max_deadline_days,
+                    tasks))
 
         if self.filter_settings.max_deadline_days_past is not None:
             tasks = list(
-                filter(lambda x: x.deadline is None or (today - x.deadline).days <= self.filter_settings.max_deadline_days_past,
+                filter(lambda x: x.deadline is None or (
+                            today - x.deadline).days <= self.filter_settings.max_deadline_days_past,
                        tasks))
 
         self.task_map.clear()
@@ -165,9 +181,3 @@ class Application(tk.Tk):
 
             self.selected_task = self.task_journal.get_task_by_name_and_deadline(task_name, task_date)
             self.refresh_task_info_frame()
-
-
-
-if __name__ == "__main__":
-    app = Application()
-    app.mainloop()
