@@ -37,8 +37,15 @@ class Application(tk.Tk):
 
         self.add_task_button = ttk.Button(self, text="Dodaj zadanie", command=self.show_new_task_dialog)
 
-        self.task_treeview = ttk.Treeview(self.left_frame, selectmode="browse", show="tree")
+        self.treeview_frame = ttk.Frame(self.left_frame)
+
+        self.task_treeview = ttk.Treeview(self.treeview_frame, selectmode="browse", show="tree")
         self.task_treeview.bind('<<TreeviewSelect>>', self.handle_task_selection)
+
+        self.v_scrollbar = ttk.Scrollbar(self.treeview_frame, orient='vertical', command=self.task_treeview.yview)
+        self.h_scrollbar = ttk.Scrollbar(self.treeview_frame, orient='horizontal', command=self.task_treeview.xview)
+
+        self.task_treeview.configure(yscrollcommand=self.v_scrollbar.set, xscrollcommand=self.h_scrollbar.set)
 
         self.task_info_frame = TaskInfoFrame(self.right_frame)
         self.task_info_frame.grid(row=0, column=0, sticky="nswe")
@@ -52,13 +59,18 @@ class Application(tk.Tk):
         self.left_frame.grid(row=0, column=0, sticky="nswe")
         self.right_frame.grid(row=0, column=1, sticky="nswe")
         self.add_task_button.grid(row=1, column=0, columnspan=2)
-        self.task_treeview.grid(sticky="nswe")
+        self.task_treeview.grid(row=0, column=0, sticky="nswe")
+        self.v_scrollbar.grid(row=0, column=1, sticky='ns')
+        self.h_scrollbar.grid(row=1, column=0, sticky='ew')
+        self.treeview_frame.grid(sticky="nswe")
         self.edit_task_button.grid(row=1, column=0, sticky="nswe")
         self.delete_task_button.grid(row=1, column=1, sticky="nswe")
         self.filter_button.grid(row=2, column=0, columnspan=2)
 
         self.left_frame.grid_columnconfigure(0, weight=1)
         self.left_frame.grid_rowconfigure(0, weight=1)
+        self.treeview_frame.grid_rowconfigure(0, weight=1)
+        self.treeview_frame.grid_columnconfigure(0, weight=1)
 
     def show_new_task_dialog(self):
         dialog = NewTaskDialog(self)
@@ -69,6 +81,9 @@ class Application(tk.Tk):
             self.refresh_task_treeview()
 
     def show_edit_task_dialog(self):
+        if not self.selected_task:
+            return
+
         dialog = EditTaskDialog(self, task=self.selected_task)
         if dialog.result is not None:
             self.task_journal.edit_task(
@@ -90,11 +105,13 @@ class Application(tk.Tk):
         self.refresh_task_info_frame()
 
     def delete_task(self):
-        if self.selected_task:
-            self.task_journal.delete_task(self.selected_task.id)
-            self.update_task_map()
-            self.refresh_task_treeview()
-            self.refresh_task_info_frame()
+        if not self.selected_task:
+            return
+
+        self.task_journal.delete_task(self.selected_task.id)
+        self.update_task_map()
+        self.refresh_task_treeview()
+        self.refresh_task_info_frame()
 
     def update_task_map(self):
         tasks = self.task_journal.get_all_tasks()
