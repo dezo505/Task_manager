@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 
 from backend.task_journal import TaskJournal
+from frontend.edit_task_dialog import EditTaskDialog
 from frontend.new_task_dialog import NewTaskDialog
 from frontend.task_info_frame import TaskInfoFrame
 
@@ -60,9 +61,18 @@ class Application(tk.Tk):
             self.refresh_task_treeview()
 
     def show_edit_task_dialog(self):
-        selected_task = None
-        dialog = NewTaskDialog(self, task=selected_task)
-        print("Edytowane zadanie:", dialog.result)
+        dialog = EditTaskDialog(self, task=self.selected_task)
+        if dialog.result is not None:
+            self.task_journal.edit_task(
+                self.selected_task.id,
+                name=dialog.result.name,
+                deadline=dialog.result.deadline,
+                description=dialog.result.description,
+                is_done=dialog.result.is_done
+            )
+            self.update_task_map()
+            self.refresh_task_treeview()
+            self.refresh_task_info_frame()
 
     def delete_task(self):
         if self.selected_task:

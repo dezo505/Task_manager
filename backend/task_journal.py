@@ -60,17 +60,17 @@ class TaskJournal:
         """)
         return [self.row_to_task(row) for row in self.cursor.fetchall()]
 
-    def edit_task(self, task_id, task_name=None, added_date=None, deadline=None, description=None, is_done=None):
-        if not any([task_name, added_date, deadline, description, is_done is not None]):
+    def edit_task(self, task_id, name=None, added_date=None, deadline=None, description=None, is_done=None):
+        if not any([name, added_date, deadline, description, is_done is not None]):
             logging.error("At least one task property must be provided for the update.")
             return
 
         query = "UPDATE tasks SET "
         params = []
 
-        if task_name:
+        if name and name != "":
             query += "task_name = ?, "
-            params.append(task_name)
+            params.append(name)
         if added_date:
             query += "added_date = ?, "
             params.append(added_date.strftime('%Y-%m-%d'))

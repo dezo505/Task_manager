@@ -1,4 +1,5 @@
 import tkinter as tk
+from datetime import datetime
 from tkinter import simpledialog
 
 from tkcalendar import DateEntry
@@ -31,7 +32,7 @@ class EditTaskDialog(simpledialog.Dialog):
         self.is_done_checkbutton.grid(row=3, column=1)
 
         self.name_entry.insert(tk.END, self.task.name)
-        self.deadline_entry.set_date(self.task.deadline)
+        self.deadline_entry.set_date(datetime.strptime(self.task.deadline, '%Y-%m-%d').date())
         self.description_text.insert(tk.END, self.task.description)
         self.is_done_var.set(int(self.task.is_done))
 
