@@ -1,4 +1,4 @@
-from frontend.application import Application
+from frontend.frame.main_frame import Application
 
 if __name__ == "__main__":
     app = Application(theme="radiance")

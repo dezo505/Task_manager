@@ -4,11 +4,11 @@ from tkinter import ttk
 from ttkthemes import ThemedTk
 
 from backend.task_journal import TaskJournal
-from frontend.edit_task_dialog import EditTaskDialog
-from frontend.filter_dialog import FilterDialog
-from frontend.filter_settings import FilterSettings
-from frontend.new_task_dialog import NewTaskDialog
-from frontend.task_info_frame import TaskInfoFrame
+from frontend.dialog.edit_task_dialog import EditTaskDialog
+from frontend.dialog.filter.filter_dialog import FilterDialog
+from frontend.dialog.filter.filter_settings import FilterSettings
+from frontend.dialog.new_task_dialog import NewTaskDialog
+from frontend.frame.task_info_frame import TaskInfoFrame
 
 
 class Application(ThemedTk):
