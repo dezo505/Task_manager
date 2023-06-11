@@ -12,10 +12,10 @@ class NewTaskDialog(simpledialog.Dialog):
 
     def body(self, parent):
         self.geometry("400x300")
-        ttk.Label(parent, text="Nazwa zadania:").grid(row=0, column=0)
+        ttk.Label(parent, text="Name:").grid(row=0, column=0)
         ttk.Label(parent, text="Deadline:").grid(row=1, column=0)
-        ttk.Label(parent, text="Opis:").grid(row=2, column=0)
-        ttk.Label(parent, text="Czy wykonane:").grid(row=3, column=0)
+        ttk.Label(parent, text="Description:").grid(row=2, column=0)
+        ttk.Label(parent, text="Finished:").grid(row=3, column=0)
 
         self.name_entry = ttk.Entry(parent)
         self.deadline_entry = DateEntry(parent)
@@ -49,7 +49,7 @@ class NewTaskDialog(simpledialog.Dialog):
         is_done = bool(self.is_done_var.get())
 
         if not task_name:
-            tk.messagebox.showwarning("Error", "Nazwa zadania nie może być pusta.")
+            tk.messagebox.showwarning("Error", "Task name can't be blank.")
             return
 
         task = Task(task_name=task_name, deadline=deadline, description=description, is_done=is_done)

@@ -4,11 +4,11 @@ from tkinter import ttk, Text, Scrollbar, N, S, E, W, END
 class TaskInfoFrame(ttk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
-        self.task_name_label = ttk.Label(self, text="Nazwa zadania:")
-        self.added_date_label = ttk.Label(self, text="Data dodania:")
-        self.deadline_label = ttk.Label(self, text="Termin:")
-        self.description_label = ttk.Label(self, text="Opis:")
-        self.is_done_label = ttk.Label(self, text="Zadanie zakończone:")
+        self.task_name_label = ttk.Label(self, text="Name:")
+        self.added_date_label = ttk.Label(self, text="Added date:")
+        self.deadline_label = ttk.Label(self, text="Deadline:")
+        self.description_label = ttk.Label(self, text="Description:")
+        self.is_done_label = ttk.Label(self, text="Finished:")
 
         self.task_name_value = ttk.Label(self)
         self.added_date_value = ttk.Label(self)

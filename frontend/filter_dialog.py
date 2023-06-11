@@ -7,10 +7,10 @@ class FilterDialog(simpledialog.Dialog):
         super().__init__(parent)
 
     def body(self, master):
-        ttk.Label(master, text="Pokaż zadania zrobione:").grid(row=0, sticky='w')
-        ttk.Label(master, text="Pokaż zadania niezrobione:").grid(row=1, sticky='w')
-        ttk.Label(master, text="Pokaż zadania z terminem do X dni:").grid(row=2, sticky='w')
-        ttk.Label(master, text="Pokaż zadania, które minęły co najwyżej X dni temu:").grid(row=3, sticky='w')
+        ttk.Label(master, text="Show finished tasks:").grid(row=0, sticky='w')
+        ttk.Label(master, text="Show not finished tasks:").grid(row=1, sticky='w')
+        ttk.Label(master, text="Show tasks with a deadline within X days:").grid(row=2, sticky='w')
+        ttk.Label(master, text="Show tasks that were due at most X days ago:").grid(row=3, sticky='w')
 
         self.done_var = BooleanVar(value=self.filter_settings.show_done_tasks)
         self.not_done_var = BooleanVar(value=self.filter_settings.show_not_done_tasks)

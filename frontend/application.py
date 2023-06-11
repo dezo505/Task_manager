@@ -35,7 +35,7 @@ class Application(ThemedTk):
         self.left_frame = ttk.Frame(self)
         self.right_frame = ttk.Frame(self)
 
-        self.add_task_button = ttk.Button(self, text="Dodaj zadanie", command=self.show_new_task_dialog, width=20)
+        self.add_task_button = ttk.Button(self, text="Add task", command=self.show_new_task_dialog, width=20)
 
         self.treeview_frame = ttk.Frame(self.left_frame)
 
@@ -50,11 +50,11 @@ class Application(ThemedTk):
         self.task_info_frame = TaskInfoFrame(self.right_frame)
         self.task_info_frame.grid(row=0, column=0, sticky="nswe")
 
-        self.edit_task_button = ttk.Button(self.right_frame, text="Edytuj zadanie", command=self.show_edit_task_dialog, width=20)
+        self.edit_task_button = ttk.Button(self.right_frame, text="Edit task", command=self.show_edit_task_dialog, width=20)
 
-        self.delete_task_button = ttk.Button(self.right_frame, text="Usuń zadanie", command=self.delete_task, width=20)
+        self.delete_task_button = ttk.Button(self.right_frame, text="Delete task", command=self.delete_task, width=20)
 
-        self.filter_button = ttk.Button(self, text="Filtruj", command=self.show_filter_dialog, width=20)
+        self.filter_button = ttk.Button(self, text="Filter", command=self.show_filter_dialog, width=20)
 
         self.left_frame.grid(row=0, column=0, sticky="nswe")
         self.right_frame.grid(row=0, column=1, sticky="nswe")
