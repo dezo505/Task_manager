@@ -15,7 +15,7 @@ class Application(ThemedTk):
     def __init__(self, theme="arc", *args, **kwargs):
         super().__init__(theme=theme, *args, **kwargs)
         self.title("Task manager")
-        self.geometry("1100x600")
+        self.geometry("750x500")
         self.resizable(False, False)
 
         self.task_journal = TaskJournal()
@@ -71,6 +71,9 @@ class Application(ThemedTk):
         self.left_frame.grid_rowconfigure(0, weight=1)
         self.treeview_frame.grid_rowconfigure(0, weight=1)
         self.treeview_frame.grid_columnconfigure(0, weight=1)
+
+        self.left_frame.grid(row=0, column=0, sticky="nswe", padx=(0, 5))
+        self.right_frame.grid(row=0, column=1, sticky="nswe", padx=(5, 0))
 
     def show_new_task_dialog(self):
         self.treeview_frame.grid_propagate(False)
