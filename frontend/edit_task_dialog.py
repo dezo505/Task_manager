@@ -19,7 +19,7 @@ class EditTaskDialog(simpledialog.Dialog):
 
         self.name_entry = ttk.Entry(parent)
         self.deadline_entry = DateEntry(parent)
-        self.description_text = tk.Text(parent, width=30, height=10) # No ttk alternative for Text
+        self.description_text = tk.Text(parent, width=30, height=10, font=("Ubuntu", 10))
         self.is_done_var = tk.IntVar()
         self.is_done_checkbutton = ttk.Checkbutton(parent, variable=self.is_done_var)
 

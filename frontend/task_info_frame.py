@@ -13,24 +13,24 @@ class TaskInfoFrame(ttk.Frame):
         self.task_name_value = ttk.Label(self)
         self.added_date_value = ttk.Label(self)
         self.deadline_value = ttk.Label(self)
-        self.description_value = Text(self, height=4, wrap='word', state='disabled')
+        self.description_value = Text(self, height=10, width=50, wrap='word', state='disabled', font=("Ubuntu", 10))
         self.is_done_value = ttk.Label(self)
 
         self.description_scrollbar = Scrollbar(self, command=self.description_value.yview)
         self.description_value['yscrollcommand'] = self.description_scrollbar.set
 
-        self.task_name_label.grid(row=0, column=0, sticky="w")
-        self.added_date_label.grid(row=1, column=0, sticky="w")
-        self.deadline_label.grid(row=2, column=0, sticky="w")
-        self.description_label.grid(row=3, column=0, sticky="w")
-        self.is_done_label.grid(row=4, column=0, sticky="w")
+        self.task_name_label.grid(row=0, column=0, sticky="w", pady=(10, 0))
+        self.added_date_label.grid(row=1, column=0, sticky="w", pady=(10, 0))
+        self.deadline_label.grid(row=2, column=0, sticky="w", pady=(10, 0))
+        self.description_label.grid(row=3, column=0, sticky="w", pady=(10, 0))
+        self.is_done_label.grid(row=4, column=0, sticky="w", pady=(10, 0))
 
-        self.task_name_value.grid(row=0, column=1, sticky="w")
-        self.added_date_value.grid(row=1, column=1, sticky="w")
-        self.deadline_value.grid(row=2, column=1, sticky="w")
-        self.description_value.grid(row=3, column=1, sticky=W + E)
-        self.description_scrollbar.grid(row=3, column=2, sticky=N + S)
-        self.is_done_value.grid(row=4, column=1, sticky="w")
+        self.task_name_value.grid(row=0, column=1, sticky="w", pady=(10, 0))
+        self.added_date_value.grid(row=1, column=1, sticky="w", pady=(10, 0))
+        self.deadline_value.grid(row=2, column=1, sticky="w", pady=(10, 0))
+        self.description_value.grid(row=3, column=1, sticky=W + E, pady=(10, 0))
+        self.description_scrollbar.grid(row=3, column=2, sticky=N + S, pady=(10, 0))
+        self.is_done_value.grid(row=4, column=1, sticky="w", pady=(10, 0))
 
     def update_task(self, task):
         self.description_value.config(state="normal")
@@ -42,7 +42,7 @@ class TaskInfoFrame(ttk.Frame):
             self.description_value.delete("1.0", END)
             self.description_value.insert("1.0", task.description)
 
-            self.is_done_value.config(text="Tak" if task.is_done else "Nie")
+            self.is_done_value.config(text="Yes" if task.is_done else "No")
         else:
             self.task_name_value.config(text="")
             self.added_date_value.config(text="")
