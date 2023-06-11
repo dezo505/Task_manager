@@ -1,11 +1,8 @@
 import tkinter as tk
+from tkinter import ttk, simpledialog
 from datetime import datetime
-from tkinter import simpledialog
-
 from tkcalendar import DateEntry
-
 from backend.task import Task
-
 
 class EditTaskDialog(simpledialog.Dialog):
     def __init__(self, parent, task):
@@ -15,16 +12,16 @@ class EditTaskDialog(simpledialog.Dialog):
 
     def body(self, parent):
         self.geometry("400x300")
-        tk.Label(parent, text="Nazwa zadania:").grid(row=0, column=0)
-        tk.Label(parent, text="Deadline:").grid(row=1, column=0)
-        tk.Label(parent, text="Opis:").grid(row=2, column=0)
-        tk.Label(parent, text="Czy wykonane:").grid(row=3, column=0)
+        ttk.Label(parent, text="Nazwa zadania:").grid(row=0, column=0)
+        ttk.Label(parent, text="Deadline:").grid(row=1, column=0)
+        ttk.Label(parent, text="Opis:").grid(row=2, column=0)
+        ttk.Label(parent, text="Czy wykonane:").grid(row=3, column=0)
 
-        self.name_entry = tk.Entry(parent)
+        self.name_entry = ttk.Entry(parent)
         self.deadline_entry = DateEntry(parent)
-        self.description_text = tk.Text(parent, width=30, height=10)
+        self.description_text = tk.Text(parent, width=30, height=10) # No ttk alternative for Text
         self.is_done_var = tk.IntVar()
-        self.is_done_checkbutton = tk.Checkbutton(parent, variable=self.is_done_var)
+        self.is_done_checkbutton = ttk.Checkbutton(parent, variable=self.is_done_var)
 
         self.name_entry.grid(row=0, column=1)
         self.deadline_entry.grid(row=1, column=1)
@@ -35,6 +32,20 @@ class EditTaskDialog(simpledialog.Dialog):
         self.deadline_entry.set_date(datetime.strptime(self.task.deadline, '%Y-%m-%d').date())
         self.description_text.insert(tk.END, self.task.description)
         self.is_done_var.set(int(self.task.is_done))
+
+    def buttonbox(self):
+        box = ttk.Frame(self)
+
+        ok_button = ttk.Button(box, text="OK", width=10, command=self.ok, default="active")
+        ok_button.pack(side="left", padx=5, pady=5)
+
+        cancel_button = ttk.Button(box, text="Cancel", width=10, command=self.cancel)
+        cancel_button.pack(side="left", padx=5, pady=5)
+
+        self.bind("<Return>", self.ok)
+        self.bind("<Escape>", self.cancel)
+
+        box.pack()
 
     def ok(self, event=None):
         task_name = self.name_entry.get()

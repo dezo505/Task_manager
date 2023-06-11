@@ -15,28 +15,27 @@ class Application(ThemedTk):
     def __init__(self, theme="arc", *args, **kwargs):
         super().__init__(theme=theme, *args, **kwargs)
         self.title("Task manager")
-        self.geometry("800x600")
+        self.geometry("1100x600")
+        self.resizable(False, False)
 
         self.task_journal = TaskJournal()
         self.create_widgets()
 
         self.selected_task = None
         self.filter_settings = FilterSettings()
-        print(self.filter_settings)
 
         self.task_map = {}
         self.update_task_map()
         self.refresh_task_treeview()
 
     def create_widgets(self):
-        self.grid_rowconfigure(0, weight=1)
-        self.grid_columnconfigure(0, weight=1)
-        self.grid_columnconfigure(1, weight=1)
+        self.grid_rowconfigure(0, weight=1, minsize=300)
+        self.grid_columnconfigure(1, weight=1, minsize=300)
 
         self.left_frame = ttk.Frame(self)
         self.right_frame = ttk.Frame(self)
 
-        self.add_task_button = ttk.Button(self, text="Dodaj zadanie", command=self.show_new_task_dialog)
+        self.add_task_button = ttk.Button(self, text="Dodaj zadanie", command=self.show_new_task_dialog, width=20)
 
         self.treeview_frame = ttk.Frame(self.left_frame)
 
@@ -51,11 +50,11 @@ class Application(ThemedTk):
         self.task_info_frame = TaskInfoFrame(self.right_frame)
         self.task_info_frame.grid(row=0, column=0, sticky="nswe")
 
-        self.edit_task_button = ttk.Button(self.right_frame, text="Edytuj zadanie", command=self.show_edit_task_dialog)
+        self.edit_task_button = ttk.Button(self.right_frame, text="Edytuj zadanie", command=self.show_edit_task_dialog, width=20)
 
-        self.delete_task_button = ttk.Button(self.right_frame, text="Usuń zadanie", command=self.delete_task)
+        self.delete_task_button = ttk.Button(self.right_frame, text="Usuń zadanie", command=self.delete_task, width=20)
 
-        self.filter_button = ttk.Button(self, text="Filtruj", command=self.show_filter_dialog)
+        self.filter_button = ttk.Button(self, text="Filtruj", command=self.show_filter_dialog, width=20)
 
         self.left_frame.grid(row=0, column=0, sticky="nswe")
         self.right_frame.grid(row=0, column=1, sticky="nswe")
@@ -64,8 +63,8 @@ class Application(ThemedTk):
         self.v_scrollbar.grid(row=0, column=1, sticky='ns')
         self.h_scrollbar.grid(row=1, column=0, sticky='ew')
         self.treeview_frame.grid(sticky="nswe")
-        self.edit_task_button.grid(row=1, column=0, sticky="nswe")
-        self.delete_task_button.grid(row=1, column=1, sticky="nswe")
+        self.edit_task_button.grid(row=1, column=0)
+        self.delete_task_button.grid(row=2, column=0)
         self.filter_button.grid(row=2, column=0, columnspan=2)
 
         self.left_frame.grid_columnconfigure(0, weight=1)
@@ -74,6 +73,7 @@ class Application(ThemedTk):
         self.treeview_frame.grid_columnconfigure(0, weight=1)
 
     def show_new_task_dialog(self):
+        self.treeview_frame.grid_propagate(False)
         dialog = NewTaskDialog(self)
         if dialog.result is not None:
             task = dialog.result
@@ -86,7 +86,9 @@ class Application(ThemedTk):
             self.refresh_task_treeview()
 
     def show_edit_task_dialog(self):
+        self.treeview_frame.grid_propagate(False)
         if not self.selected_task:
+            tk.messagebox.showwarning("Error", "No task was selected.")
             return
 
         dialog = EditTaskDialog(self, task=self.selected_task)
@@ -107,6 +109,7 @@ class Application(ThemedTk):
             self.refresh_task_info_frame()
 
     def show_filter_dialog(self):
+        self.treeview_frame.grid_propagate(False)
         FilterDialog(self, self.filter_settings)
         self.selected_task = None
         self.update_task_map()
@@ -115,6 +118,7 @@ class Application(ThemedTk):
 
     def delete_task(self):
         if not self.selected_task:
+            tk.messagebox.showwarning("Error", "No task was selected.")
             return
 
         result = self.task_journal.delete_task(self.selected_task.id)
