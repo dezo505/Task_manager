@@ -1,7 +1,7 @@
 import unittest
 from datetime import datetime, timedelta
 
-from backend.task import Task
+from main.main import Task
 
 
 class TestTask(unittest.TestCase):

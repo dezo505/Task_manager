@@ -1,7 +1,7 @@
 import sqlite3
 import datetime
 import logging
-from backend.task import Task
+from main.main import Task
 
 logging.basicConfig(level=logging.INFO)
 
