@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk, simpledialog
 from datetime import datetime
 from tkcalendar import DateEntry
-from main.main import Task
+from backend.task import Task
 
 class EditTaskDialog(simpledialog.Dialog):
     def __init__(self, parent, task):

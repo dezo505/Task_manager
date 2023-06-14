@@ -3,12 +3,12 @@ from datetime import datetime
 from tkinter import ttk
 from ttkthemes import ThemedTk
 
-from main.main import TaskJournal
-from main.main import EditTaskDialog
-from main.main import FilterDialog
-from main.main import FilterSettings
-from main.main import NewTaskDialog
-from main.main import TaskInfoFrame
+from backend.task_journal import TaskJournal
+from frontend.dialog.edit_task_dialog import EditTaskDialog
+from frontend.dialog.filter.filter_dialog import FilterDialog
+from frontend.dialog.filter.filter_settings import FilterSettings
+from frontend.dialog.new_task_dialog import NewTaskDialog
+from frontend.frame.task_info_frame import TaskInfoFrame
 
 
 class Application(ThemedTk):

@@ -1,8 +1,8 @@
 import unittest
 from unittest.mock import MagicMock
 from datetime import datetime
-from main.main import Task
-from main.main import TaskJournal, row_to_task
+from backend.task import Task
+from backend.task_journal import TaskJournal, row_to_task
 
 
 class TestTaskJournal(unittest.TestCase):

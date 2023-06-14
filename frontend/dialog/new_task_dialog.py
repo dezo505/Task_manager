@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, simpledialog
 from tkcalendar import DateEntry
-from main.main import Task
+from backend.task import Task
 
 
 class NewTaskDialog(simpledialog.Dialog):
