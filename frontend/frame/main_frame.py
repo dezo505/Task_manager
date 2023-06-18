@@ -89,6 +89,7 @@ class Application(ThemedTk):
             self.selected_task = task
             self.update_task_map()
             self.refresh_task_treeview()
+            self.refresh_task_info_frame()
 
     def show_edit_task_dialog(self):
         self.treeview_frame.grid_propagate(False)
@@ -108,6 +109,8 @@ class Application(ThemedTk):
             if not result:
                 tk.messagebox.showwarning("Error", "Something went wrong, task wasn't edited.")
                 return
+
+            self.selected_task = dialog.result
 
             self.update_task_map()
             self.refresh_task_treeview()
@@ -131,6 +134,8 @@ class Application(ThemedTk):
         if not result:
             tk.messagebox.showwarning("Error", "Something went wrong, task wasn't deleted.")
             return
+
+        self.selected_task = None
 
         self.update_task_map()
         self.refresh_task_treeview()
