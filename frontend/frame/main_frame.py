@@ -46,6 +46,8 @@ class Application(ThemedTk):
         self.h_scrollbar = ttk.Scrollbar(self.treeview_frame, orient='horizontal', command=self.task_treeview.xview)
 
         self.task_treeview.configure(yscrollcommand=self.v_scrollbar.set, xscrollcommand=self.h_scrollbar.set)
+        self.task_treeview.tag_configure("finished", foreground="gray", font=("Helvetica", 10))
+        self.task_treeview.tag_configure("in_progress", foreground="black", font=("Helvetica", 10, "bold"))
 
         self.task_info_frame = TaskInfoFrame(self.right_frame)
         self.task_info_frame.grid(row=0, column=0, sticky="nswe")
@@ -170,10 +172,11 @@ class Application(ThemedTk):
         sorted_dates = sorted(self.task_map.keys(), key=lambda x: (x is None, x))
 
         for date in sorted_dates:
-            tasks_for_date = [task.name for task in self.task_map[date]]
+            tasks_for_date = self.task_map[date]  # Przyjmijmy, że to jest lista obiektów zadania
             date_item = self.task_treeview.insert('', tk.END, str(date), text=str(date), open=True)
-            for task_name in tasks_for_date:
-                self.task_treeview.insert(date_item, tk.END, text=task_name)
+            for task in tasks_for_date:
+                tag = 'finished' if task.is_done else 'in_progress'  # Zakładamy, że task ma atrybut lub metodę is_finished
+                self.task_treeview.insert(date_item, tk.END, text=task.name, tags=(tag,))
 
     def refresh_task_info_frame(self):
         self.task_info_frame.update_task(self.selected_task)
