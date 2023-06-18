@@ -172,10 +172,10 @@ class Application(ThemedTk):
         sorted_dates = sorted(self.task_map.keys(), key=lambda x: (x is None, x))
 
         for date in sorted_dates:
-            tasks_for_date = self.task_map[date]  # Przyjmijmy, że to jest lista obiektów zadania
+            tasks_for_date = self.task_map[date]
             date_item = self.task_treeview.insert('', tk.END, str(date), text=str(date), open=True)
             for task in tasks_for_date:
-                tag = 'finished' if task.is_done else 'in_progress'  # Zakładamy, że task ma atrybut lub metodę is_finished
+                tag = 'finished' if task.is_done else 'in_progress'
                 self.task_treeview.insert(date_item, tk.END, text=task.name, tags=(tag,))
 
     def refresh_task_info_frame(self):
