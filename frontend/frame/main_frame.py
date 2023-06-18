@@ -46,8 +46,8 @@ class Application(ThemedTk):
         self.h_scrollbar = ttk.Scrollbar(self.treeview_frame, orient='horizontal', command=self.task_treeview.xview)
 
         self.task_treeview.configure(yscrollcommand=self.v_scrollbar.set, xscrollcommand=self.h_scrollbar.set)
-        self.task_treeview.tag_configure("finished", foreground="gray", font=("Helvetica", 10))
-        self.task_treeview.tag_configure("in_progress", foreground="black", font=("Helvetica", 10, "bold"))
+        self.task_treeview.tag_configure("finished", foreground="#C0C0C0", font=("Helvetica", 10))
+        self.task_treeview.tag_configure("in_progress", foreground="#606060", font=("Helvetica", 10))
 
         self.task_info_frame = TaskInfoFrame(self.right_frame)
         self.task_info_frame.grid(row=0, column=0, sticky="nswe")
