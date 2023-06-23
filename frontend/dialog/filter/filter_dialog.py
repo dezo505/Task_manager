@@ -39,5 +39,12 @@ class FilterDialog(simpledialog.Dialog):
     def apply(self):
         self.filter_settings.show_done_tasks = self.done_var.get()
         self.filter_settings.show_not_done_tasks = self.not_done_var.get()
-        self.filter_settings.max_deadline_days = self.max_deadline_days_var.get()
-        self.filter_settings.max_deadline_days_past = self.max_deadline_days_past.get()
+        if self.max_deadline_days_var.get() > 0:
+            self.filter_settings.max_deadline_days = self.max_deadline_days_var.get()
+        else:
+            self.filter_settings.max_deadline_days = 0
+
+        if self.max_deadline_days_past.get() > 0:
+            self.filter_settings.max_deadline_days_past = self.max_deadline_days_past.get()
+        else:
+            self.filter_settings.max_deadline_days_past = 0
